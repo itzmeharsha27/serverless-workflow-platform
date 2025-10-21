@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Serverless Workflow Automation Platform
+
+Resources:
+  WorkflowsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: WorkflowsTable
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: workflowId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: workflowId
+          KeyType: HASH
+
+  RegisterUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: functions/registerUser.handler
+      Runtime: nodejs18.x
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /register
+            Method: post
+      Environment:
+        USERS_TABLE: UsersTable
+
+  CreateWorkflowFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: functions/createWorkflow.handler
+      Runtime: nodejs18.x
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /workflow/create
+            Method: post
+      Environment:
+        WORKFLOWS_TABLE: WorkflowsTable
+
+  TriggerWorkflowFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: functions/triggerWorkflow.handler
+      Runtime: nodejs18.x
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /workflow/trigger
+            Method: post
+      Environment:
+        WORKFLOWS_TABLE: WorkflowsTable
+
+  LogResultsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: functions/logResults.handler
+      Runtime: nodejs18.x
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /workflow/log
+            Method: post
+      Environment:
+        WORKFLOWS_TABLE: WorkflowsTable
