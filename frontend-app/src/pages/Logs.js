@@ -5,11 +5,11 @@ function Logs() {
 
   useEffect(() => {
     const fetchLogs = async () => {
-      const response = await fetch('https://<YOUR_API_GATEWAY_URL>/workflow/log', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ workflowId: 'sample-workflow', status: 'pending' })
-      });
+     const response = await fetch('https://api-gateway-endpoint.amazonaws.com/prod', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ workflowId: 'sample-workflow', status: 'pending' })
+  });
       const data = await response.json();
       setLogs([data]);
     };
